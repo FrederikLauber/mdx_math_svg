@@ -212,9 +212,13 @@ class LaTeX2SVG:
                 self.params['libgs'] = p
             elif sys.platform == 'darwin':
                 # Fallback to homebrew Ghostscript on macOS
-                homebrew_libgs = '/usr/local/opt/ghostscript/lib/libgs.dylib'
-                if os.path.exists(homebrew_libgs):
-                    self.params['libgs'] = homebrew_libgs
+                for homebrew_libgs in [
+                    '/opt/homebrew/lib/libgs.dylib',               # Homebrew on ARM Macs
+                    '/usr/local/opt/ghostscript/lib/libgs.dylib',  # Homebrew on Intel Macs
+                ]:
+                    if os.path.exists(homebrew_libgs):
+                        self.params['libgs'] = homebrew_libgs
+                        break
             if not self.params['libgs']:
                 print('Warning: libgs not found, mdx_math_svg will not be able to properly align inline equations.')
 
