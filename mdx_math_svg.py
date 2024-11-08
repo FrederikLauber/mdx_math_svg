@@ -490,7 +490,7 @@ class BlockMathSvgProcessor(BlockProcessor):
         if not latex:
             latex, attrib = self.match.group('math2'), self.match.group('attrib2')
             escaped = True  # math2 includes the '\begin{env}' and '\end{env}'
-        if not escaped:
+        if not escaped and not r'\begin{align' in latex:
             latex = r'\[' + latex + r'\]'
         svg = self.latex2svg.latex2svg(latex)
         attrib_dict = {'class': self.display_class}
