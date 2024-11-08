@@ -88,6 +88,7 @@ from hashlib import sha1
 # Increase this value if generated SVG changes somehow. Stored caches will be discarded.
 _cache_version = 1
 
+
 def _empty_cache():
     return {
         'version': _cache_version,
@@ -101,6 +102,7 @@ def _empty_cache():
 # The cache version should be bumped if the format of the cache is changed, cache files
 # with a different version number can be discarded.
 _cache = _empty_cache()
+
 
 def load_cache(file):
     """Loads cached SVG data. Use at the start of a session to avoid
@@ -120,6 +122,7 @@ def load_cache(file):
                 _cache['age'] += 1
     except FileNotFoundError:
         _cache = _empty_cache()
+
 
 def save_cache(file):
     """Saves cached SVG data. Use at the end of a session so they
@@ -186,6 +189,8 @@ class LaTeX2SVG:
             'fontsize': 1,  # em (in the sense used by CSS)
             'template': r"""
         \documentclass[12pt,preview]{standalone}
+        \usepackage{xcolor}
+        \color{white}
         {{ preamble }}
         \begin{document}
         \begin{preview}
@@ -490,7 +495,7 @@ class BlockMathSvgProcessor(BlockProcessor):
         if not latex:
             latex, attrib = self.match.group('math2'), self.match.group('attrib2')
             escaped = True  # math2 includes the '\begin{env}' and '\end{env}'
-        if not escaped and not r'\begin{align' in latex:
+        if not escaped and r'begin{align' not in latex:
             latex = r'\[' + latex + r'\]'
         svg = self.latex2svg.latex2svg(latex)
         attrib_dict = {'class': self.display_class}
